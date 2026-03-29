@@ -1,7 +1,7 @@
 from django.shortcuts import redirect
 from django.urls import path, include
 from django.conf import settings
-from . import views
+from . import views, music_api
 
 
 urlpatterns = [

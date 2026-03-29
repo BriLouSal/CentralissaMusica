@@ -60,7 +60,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
-    'allauth.socialaccount.providers.microsoft',
+    'allauth.socialaccount.providers.spotify',
     'axes',
 ]
 SOCIALACCOUNT_LOGIN_ON_GET = True
@@ -81,6 +81,19 @@ AUTHENTICATION_BACKENDS = [
     # 3. Required for Google/Microsoft social login
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
+
+SOCIALACCOUNT_PROVIDERS = {
+    "spotify": {
+        "SCOPE": [
+            "user-read-email",
+            "playlist-read-private",
+            "user-top-read",
+        ],
+        "AUTH_PARAMS": {
+            "show_dialog": "true",
+        }
+    }
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

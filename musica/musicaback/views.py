@@ -16,12 +16,13 @@ from django.conf import settings
 # Create your views here.
 from django.db.models.signals import post_save
 from django.core.cache import cache
-
+from django.dispatch import receiver
 import threading
 
 import secrets
 
 import json
+
 from django.http import JsonResponse
 
 
@@ -144,9 +145,26 @@ def loginpage(request):
     return render(request, 'base/authentication/login.html')
 
 
+@receiver(social_account_added)
+def email_google_activation(request, sociallogin, **kwargs):
+    # Create the account for them and create profile
+    user = sociallogin.user
+    # Create the profile
+    profile, _ = Profile.objects.get_or_create(user=user)
+
+    profile.is_verified = True
+    profile.save()
+
+    user.is_active = True
+    user.save()
+
+        
+
 def logout_page(request):
     logout(request)
     return redirect('signup')
+
+
 
 def home(request):
     print("Authenticated:", request.user.is_authenticated)
