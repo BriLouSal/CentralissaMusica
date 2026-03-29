@@ -1,0 +1,175 @@
+{% load static tailwind_tags %} {% load socialaccount %}
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Signup</title>
+    {% tailwind_css %}
+  </head>
+  <body>
+
+
+    <!-- Form Container we want the container to be full screen since we want to have a 50/50 UI where we have info and intro and other side is signupform -->
+    <div class="flex flex-col lg:flex-row min-h-screen">
+      <!-- Half -->
+      <section
+        class="hidden lg:flex bg-gradient-to-br from-blue-400 via-orange-500 to-red-400 w-5/12 p-12 flex-col justify-between text-white"
+      >
+        <div>
+          <h1 class="text-3xl font-bold tracking-tight">Kentro Cherma</h1>
+          <p class="mt-2 text-blue-100">A centeralized Investment Platform</p>
+        </div>
+
+        <div class="space-y-6">
+          <h2 class="text font-bold tracking-tight">Why Us?</h2>
+          <div
+            class="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/20"
+          >
+            <h3 class="text-xl font-semibold mb-2">Centralizd Investment Platform</h3>
+            <p class="text-blue-50">ALL your investments in one space, and track equities powered by SnapTrade! Supports CAD to USD conversion, allowing for a fully centralized investment tracking platform</p>
+          </div>
+
+          <div
+            class="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/20"
+          >
+            <h3 class="text-xl font-semibold mb-2">AI-Powered Investment Intelligence</h3>
+            <p class="text-blue-50">
+                <p class="text-blue-50">    Technical indicators, insider transactions, risk modeling, and AI-generated insights — structured and simplified for retail investors that allows
+                    them to understand complicated financial fundementals that impacts their stock.
+                </p>
+            
+
+            </p>
+          </div>
+          <div
+            class="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/20"
+          >
+            <h3 class="text-xl font-semibold mb-2">Institutional Tools. Retail Access</h3>
+            <p class="text-blue-50">
+                <p class="text-blue-50"> 
+                        Bullish Indicator, Risk Indicator, Recent Insider Transaction that is summarized by AI, and real-time analytics —
+    without institutional complexity.
+                </p>
+            
+
+            </p>
+          </div>
+        </div>
+
+        <div class="text-sm text-blue-200">
+          &copy; 2026 Kentro Cherma. All rights reserved.
+        </div>
+      </section>
+
+      <main class="bg-white flex flex-col w-7/12 items-center justify-center">
+        <!-- Create the form here -->
+        <div
+          class="border-none flex flex-row w-full max-w-[500px] h-3/4 items-center justify-center"
+        >
+          <form
+            action="{% url 'signup' %}"
+            method="POST"
+            class="w-full flex flex-col items-center"
+          >
+            {% csrf_token %}
+            <!-- Wrapper for the text, so we can adjust it accordingly -->
+            <div
+              class="w-full flex flex-col items-center gap-6 mb-4 text-center"
+            >
+              <label
+                for="email"
+                class="text-black font-bold text-2xl items-start justify-start"
+                >Email</label
+              >
+              <input
+                type="email"
+                name="email"
+                id="email"
+                placeholder="Enter your Email"
+                class="text-center text-black rounded 2xl h-full w-full bg-gray-100"
+                required
+              />
+
+              <label for="username" class="text-black font-bold text-2xl"
+                >Username</label
+              >
+              <input
+                type="username"
+                name="username"
+                id="username"
+                placeholder="Enter your Username"
+                class="text-center text-black w-full rounded-2xl h-3/4 bg-gray-100"
+                required
+              />
+
+              <label for="pasword" class="text-black font-bold text-2xl"
+                >Password</label
+              >
+              <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Enter your Password"
+                class="text-center text-black bg-gray-100 round-2xl w-full"
+                required
+              />
+
+              <button
+                type="submit"
+                class="text-white text-2xl bg-blue-500 w-full hover:bg-blue-800 hover:text-gray-400 rounded-2xl h-3/4"
+              >
+                Sign Up
+              </button>
+
+              <a href="{% url 'login' %}" class="text-center">
+                <label
+                  for="Login"
+                  class="text-black font-bold text-size[12px] text-sm uppercase tracking-wide"
+                  >Already Signed up? Login to your account
+                </label>
+              </a>
+
+              <span
+                class="flex-shrink mx-4 text-gray-400 text-sm uppercase tracking-wide"
+              >
+                Or continue with
+              </span>
+              <a
+                href="{% provider_login_url 'google' next=request.path %}"
+                class="flex items-center justify-center gap-3 w-full bg-white border border-gray-300 rounded-lg py-3 px-4 shadow-sm hover:shadow-md transition duration-200"
+              >
+                <svg class="w-6 h-6 min-w-[24px]" viewBox="0 0 48 48">
+                  <path
+                    fill="#EA4335"
+                    d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"
+                  />
+                  <path
+                    fill="#4285F4"
+                    d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"
+                  />
+                  <path
+                    fill="#FBBC05"
+                    d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"
+                  />
+                  <path
+                    fill="#34A853"
+                    d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"
+                  />
+                </svg>
+
+                <span class="text-gray-700 font-medium">
+                  Sign in with Google
+                </span>
+              </a>
+            </div>
+            <!-- Flex row for continue with! -->
+  
+          </form>
+        </div>
+      </main>
+    </div>
+
+  </body>
+</html>
