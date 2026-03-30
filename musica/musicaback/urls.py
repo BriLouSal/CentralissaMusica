@@ -13,6 +13,7 @@ urlpatterns = [
     
     path('', views.signup_page, name='signup'),  
     path('login/' , views.loginpage, name='login'),
+    path('spotify/' , music_api.spotify_connect, name='spotify'),
 ]
 
 if settings.DEBUG:

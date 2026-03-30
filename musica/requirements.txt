@@ -3,3 +3,4 @@ django-axes
 dotenv
 django-allauth
 jwt
+spotipy
