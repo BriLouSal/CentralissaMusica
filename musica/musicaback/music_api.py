@@ -51,7 +51,7 @@ def spotify_connect(request):
         redirect_uri=os.getenv("SPOTIFY_REDIRECT_URI"),
         scope="user-read-email playlist-read-private user-top-read",
     )
-    return redirect(link_generator.get_authorize_url)
+    return redirect(link_generator.get_authorize_url())
 
 
 @login_required
@@ -60,20 +60,31 @@ def spotify_callback_to_views(request):
     if not code:
         return JsonResponse({"error": "No code provided"}, status=400)
 
-
     response = requests.post(
-    os.getenv("SPOTIFY_TOKEN_URL"),
-    data={
-        "grant_type": "authorization_code",
-        "code": code,
-        "redirect_uri": os.getenv("SPOTIFY_REDIRECT_URI"),
-        "client_id": SPOTIFY_API,
-        "client_secret": SPOTIFY_SECRET_KEY,
-    },
-    
+        os.getenv("SPOTIFY_TOKEN_URL"),
+        data={
+            "grant_type": "authorization_code",
+            "code": code,
+            "redirect_uri": os.getenv("SPOTIFY_REDIRECT_URI"),
+            "client_id": SPOTIFY_API,
+            "client_secret": SPOTIFY_SECRET_KEY,
+        },
+    )
 
-)
+    data = response.json()
+    print("SPOTIFY RESPONSE:", data) 
 
+    access_token = data.get("access_token")
+    refresh_token = data.get("refresh_token")
+
+    if not access_token:
+        return JsonResponse(data, status=400)
+
+
+    request.session["spotify_access_token"] = access_token
+    request.session["spotify_refresh_token"] = refresh_token
+
+    return redirect("home")  
 
 
 def music_db(music: str):

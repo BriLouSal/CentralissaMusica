@@ -14,6 +14,7 @@ urlpatterns = [
     path('', views.signup_page, name='signup'),  
     path('login/' , views.loginpage, name='login'),
     path('spotify/' , music_api.spotify_connect, name='spotify'),
+    path('spotify/callback/', music_api.spotify_callback_to_views, name='spotify_callback'),
 ]
 
 if settings.DEBUG:
