@@ -1,7 +1,9 @@
 from django.shortcuts import redirect
 from django.urls import path, include
 from django.conf import settings
-from . import views, music_api
+
+
+from . import views, music_api, music_search_engine
 
 
 urlpatterns = [
@@ -15,7 +17,7 @@ urlpatterns = [
     path('login/' , views.loginpage, name='login'),
     path('spotify/' , music_api.spotify_connect, name='spotify'),
     path('spotify/callback/', music_api.spotify_callback_to_views, name='spotify_callback'),
-    path('music-search/autocomplete/<str:query>/', music_api.spotify_search_view, name='spotify_search'),
+    path('music-search/autocomplete/<str:query>/', music_search_engine.spotify_search_view, name='search_views'),
 ]
 
 if settings.DEBUG:
