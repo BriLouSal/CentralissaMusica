@@ -96,4 +96,11 @@ def spotifty_search_engine(data: str) -> dict:
             "spotify_url": item["external_urls"]["spotify"],
             "type": "playlist"
         })
-    return JsonResponse({"results": data})
+    cache.set(cache_key, data, timeout=60*60)  # Cache for 1 hour
+    return data
+
+
+
+async def spotify_search_view(request, query):
+    result = await spotifty_search_engine(query)
+    return JsonResponse({"results": result})

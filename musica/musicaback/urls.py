@@ -15,6 +15,7 @@ urlpatterns = [
     path('login/' , views.loginpage, name='login'),
     path('spotify/' , music_api.spotify_connect, name='spotify'),
     path('spotify/callback/', music_api.spotify_callback_to_views, name='spotify_callback'),
+    path('music-search/autocomplete/<str:query>/', music_api.spotify_search_view, name='spotify_search'),
 ]
 
 if settings.DEBUG:
