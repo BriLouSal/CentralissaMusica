@@ -4,3 +4,4 @@ dotenv
 django-allauth
 jwt
 spotipy
+billboard.py

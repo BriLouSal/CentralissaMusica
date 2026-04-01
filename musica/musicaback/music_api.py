@@ -87,5 +87,23 @@ def spotify_callback_to_views(request):
     return redirect("home")  
 
 
+
+def billboard_top_100(request):
+    # Billboard API endpoint for the top 100 songs
+    url = "https://billboard-api2.p.rapidapi.com/hot-100"
+
+    headers = {
+        "X-RapidAPI-Key": os.getenv("BILLBOARD_API_KEY"),
+        "X-RapidAPI-Host": "billboard-api2.p.rapidapi.com"
+    }
+
+    response = requests.get(url, headers=headers)
+
+    if response.status_code == 200:
+        data = response.json()
+        return JsonResponse(data)
+    else:
+        return JsonResponse({"error": "Failed to fetch data from Billboard API"}, status=response.status_code)
+    
 def music_db(music: str):
     pass
