@@ -104,3 +104,6 @@ def spotifty_search_engine(data: str) -> dict:
 async def spotify_search_view(request, query):
     result = await spotifty_search_engine(query)
     return JsonResponse({"results": result})
+
+
+

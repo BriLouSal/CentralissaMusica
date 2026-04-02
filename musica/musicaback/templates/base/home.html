@@ -31,27 +31,31 @@
         </h1>
       </div>
 
-      <a
-        href="{% url 'spotify' %}"
-        class="bg-green-500 hover:bg-green-600 text-black font-semibold px-4 py-2 rounded-lg shadow-md transition"
-      >
-        Connect to Spotify
-      </a>
+      <div class="flex justify-center">
+        <form method="GET" action="" class="w-full max-w-xl relative">
+          <input
+            type="text"
+            id="stockSearch"
+            name="search"
+            placeholder="Search songs, artists, albums..."
+            autocomplete="off"
+            class="bg-black text-gray-200 w-[500px] px-6 py-3 rounded-xl border border-gray-300 focus:outline-none shadow-sm"
+          />
 
-      <form method="GET" action="">
-        <input
-          type="text"
-          id="stockSearch"
-          name="search"
-          placeholder="Search stocks..."
-          autocomplete="off"
-          class="bg-white w-full px-6 py-3 rounded-xl border border-gray-300 focus:outline-none shadow-sm"
-        />
-      </form>
+          <div
+            class="autocomplete hidden absolute top-full left-0 w-full bg-gray-900 border border-gray-600 mt-2 rounded-xl shadow-2xl z-50 max-h-64 overflow-y-auto"
+          ></div>
+        </form>
+      </div>
 
-      <div
-        class="autocomplete hidden absolute top-full left-0 w-full bg-gray-900 border border-gray-600 mt-2 rounded-xl shadow-2xl z-50 max-h-64 overflow-y-auto"
-      ></div>
+      <div class="flex justify-end">
+        <a
+          href="{% url 'spotify' %}"
+          class="bg-green-500 hover:bg-green-600 text-black font-semibold px-4 py-2 rounded-lg shadow-md transition"
+        >
+          Connect to Spotify
+        </a>
+      </div>
     </div>
 
     {% block scripts %}
@@ -64,7 +68,6 @@
 
     <script src="{% static 'animation.js' %}" defer></script>
     <script src="{% static 'search.js' %}" defer></script>
-  
 
     {% endblock scripts %}
   </body>
