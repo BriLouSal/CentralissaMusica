@@ -10,12 +10,4 @@ document.addEventListener('DOMContentLoaded', function () {
     maxDistance: 20
   })
 
-  anime({
-    targets: 'music-logo span',
-    scale: [1, 1.4],
-    direction: 'alternate',
-    loop: true,
-    easing: 'easeInOutSine',
-    duration: 600
-  })
-})
+});
