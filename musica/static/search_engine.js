@@ -25,23 +25,24 @@ input.addEventListener('input', async () => {
         if (data.results && data.results.length > 0) {
             autocomplete.classList.remove('hidden');
 
-            autocomplete.innerHTML = data.results.map(item => `
+        autocomplete.innerHTML = data.results.map(item => `
+            <div class="flex items-center gap-3 px-4 py-2 hover:bg-gray-800 cursor-pointer"
+                onclick="window.location.href='/music-player/${item.name}/'">
 
-                    
-                    <img src="${item.image || 'https://via.placeholder.com/40'}" 
-                         class="w-10 h-10 rounded object-cover" onclick="window.location.href='/music-player/${item.name}/'"/>
+                <img src="${item.image || 'https://via.placeholder.com/40'}" 
+                    class="w-10 h-10 rounded object-cover"/>
 
-                    <div>
-                        <div class="text-white text-sm font-bold">
-                            ${item.name ?? ''}
-                        </div>
-                        <div class="text-white text-xs
-                        font-semibold">
-                            ${item.artist ?? ''}
-                        </div>
+                <div>
+                    <div class="text-white text-sm font-bold">
+                        ${item.name ?? ''}
+                    </div>
+                    <div class="text-white text-xs font-semibold">
+                        ${item.artist ?? ''}
                     </div>
                 </div>
-            `).join('');
+
+            </div>
+        `).join('');
 
     } else {
         autocomplete.classList.add('hidden');

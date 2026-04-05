@@ -26,13 +26,16 @@ import json
 from django.http import JsonResponse
 
 
+from asgiref.sync import sync_to_async, async_to_sync
+
+
 from allauth.socialaccount.signals import social_account_added
 
 from datetime import datetime, date
 
 from dateutil.relativedelta import relativedelta
 import requests
-from .music_search_engine import music_exists_view
+from .music_search_engine import music_exists_view, music_search_view, music_search_view, search_engine
 
 
 # Create your views here.
@@ -165,20 +168,33 @@ def logout_page(request):
     logout(request)
     return redirect('signup')
 
+def search_music(request):
+    # instead of having a seperate music search for each function, we can just make a function that primarily handles them for better reusability and less code repetition. We can also make it so that the search engine is more dynamic and can be used for other purposes as well, such as searching for artists or albums.
+    query = request.GET.get('search', '')
+    
+    referer = request.META.get('HTTP_REFERER', '/')
+
+
+    if not query:
+        messages.warning(request, "Please enter a search query.")
+        return redirect(referer)
+        # We also want to also use like search first index
+    result_query = async_to_sync(search_engine)(query)
+    if not result_query:
+        messages.warning(request, "No results found for your query.")
+        return render(request, 'base/home.html')
+    else:
+        search_index =  result_query[0]
+        return redirect('music_player', music_name=search_index["name"])
+
 
 
 def home(request):
     print("Authenticated:", request.user.is_authenticated)
     print("User:", request.user)
+    if 'search' in request.GET:
+        return search_music(request)
     # We're grabbing via the input's name
-    query = request.GET.get('search', '')
-    if query:
-        check_music_exists = music_exists_view(request, query)
-        if not check_music_exists:
-            messages.warning(request, "No results found for your query.")
-            return render(request, 'base/home.html')
-        else:
-            return redirect('music_player', music_name=query)
         
     
 
@@ -186,5 +202,7 @@ def home(request):
 
 
 def music_player(request, music_name: str):
+    if 'search' in request.GET:
+        return search_music(request)
     return render(request, 'base/music_player.html', context={"music_name": music_name}) 
 
