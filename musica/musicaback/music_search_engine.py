@@ -72,12 +72,17 @@ def search_engine(query: str):
             "id": item["id"],
             "url": item["link"],
             "image": item["album"]["cover_medium"],
+            "rank": item.get("rank", 0),
         })
 
     if not data:
         return []
-    cache.set(cache_key, data, timeout=60 * 60 * 60 *24 * 7)  # Cache for 7 days
-    return data
+    # We should also sort via the most listened music
+    
+    items = sorted(data, key=lambda x: x.get("rank", 0), reverse=True)
+    
+    cache.set(cache_key, items, timeout=60 * 60 * 60 *24 * 7)  # Cache for 7 days
+    return items
 
 
 
@@ -87,3 +92,11 @@ async def music_search_view(request, query):
 
 
 
+def music_exists_view(request, song_name) -> bool:
+    # Check if the song exists in our database or via API
+    # For simplicity, we'll just check via the search engine
+    results = async_to_sync(search_engine)(song_name)
+    exists = any(song for song in results if song["name"].lower() == song_name.lower())
+    if exists:
+        return True
+    return False

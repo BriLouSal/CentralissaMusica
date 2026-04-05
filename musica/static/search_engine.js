@@ -27,15 +27,16 @@ input.addEventListener('input', async () => {
 
             autocomplete.innerHTML = data.results.map(item => `
 
-
+                    
                     <img src="${item.image || 'https://via.placeholder.com/40'}" 
-                         class="w-10 h-10 rounded object-cover" />
+                         class="w-10 h-10 rounded object-cover" onclick="window.location.href='/music-player/${item.name}/'"/>
 
                     <div>
-                        <div class="text-white text-sm font-semibold">
+                        <div class="text-white text-sm font-bold">
                             ${item.name ?? ''}
                         </div>
-                        <div class="text-white-400 text-xs">
+                        <div class="text-white text-xs
+                        font-semibold">
                             ${item.artist ?? ''}
                         </div>
                     </div>

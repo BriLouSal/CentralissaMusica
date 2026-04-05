@@ -32,6 +32,7 @@ from datetime import datetime, date
 
 from dateutil.relativedelta import relativedelta
 import requests
+from .music_search_engine import music_exists_view
 
 
 # Create your views here.
@@ -169,4 +170,21 @@ def logout_page(request):
 def home(request):
     print("Authenticated:", request.user.is_authenticated)
     print("User:", request.user)
+    # We're grabbing via the input's name
+    query = request.GET.get('search', '')
+    if query:
+        check_music_exists = music_exists_view(request, query)
+        if not check_music_exists:
+            messages.warning(request, "No results found for your query.")
+            return render(request, 'base/home.html')
+        else:
+            return redirect('music_player', song_name=query)
+        
+    
+
     return render(request, 'base/home.html')
+
+
+def music_player(request, song_name: str):
+    return render(request, 'base/music_player.html') 
+
