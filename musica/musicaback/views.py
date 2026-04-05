@@ -178,13 +178,13 @@ def home(request):
             messages.warning(request, "No results found for your query.")
             return render(request, 'base/home.html')
         else:
-            return redirect('music_player', song_name=query)
+            return redirect('music_player', music_name=query)
         
     
 
     return render(request, 'base/home.html')
 
 
-def music_player(request, song_name: str):
-    return render(request, 'base/music_player.html') 
+def music_player(request, music_name: str):
+    return render(request, 'base/music_player.html', context={"music_name": music_name}) 
 

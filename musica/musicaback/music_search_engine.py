@@ -62,8 +62,7 @@ def search_engine(query: str):
 
     data = []
     # Limit to 10 results for performance reasons
-
-    for item in results[:10]:
+    for item in results[:50]:
         data.append({
             "name": item["title"],
             "artist": item["artist"]["name"],
@@ -82,7 +81,7 @@ def search_engine(query: str):
     items = sorted(data, key=lambda x: x.get("rank", 0), reverse=True)
     
     cache.set(cache_key, items, timeout=60 * 60 * 60 *24 * 7)  # Cache for 7 days
-    return items
+    return items[:10]  # Return top 10 results
 
 
 
