@@ -19,6 +19,7 @@ urlpatterns = [
     path('spotify/callback/', music_api.spotify_callback_to_views, name='spotify_callback'),
     path('music-search/autocomplete/<str:query>/', music_search_engine.music_search_view, name='search_views'),
     path('music-player/<str:music_name>/', views.music_player, name='music_player'),
+    path('artist/<str:artist_name>/', views.artist_page, name='artist_page'),
 ]
 
 if settings.DEBUG:

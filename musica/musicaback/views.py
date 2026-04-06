@@ -35,7 +35,7 @@ from datetime import datetime, date
 
 from dateutil.relativedelta import relativedelta
 import requests
-from .music_search_engine import music_exists_view, music_search_view, music_search_view, search_engine
+from .music_search_engine import search_music
 
 
 # Create your views here.
@@ -168,24 +168,7 @@ def logout_page(request):
     logout(request)
     return redirect('signup')
 
-def search_music(request):
-    # instead of having a seperate music search for each function, we can just make a function that primarily handles them for better reusability and less code repetition. We can also make it so that the search engine is more dynamic and can be used for other purposes as well, such as searching for artists or albums.
-    query = request.GET.get('search', '')
-    
-    referer = request.META.get('HTTP_REFERER', '/')
 
-
-    if not query:
-        messages.warning(request, "Please enter a search query.")
-        return redirect(referer)
-        # We also want to also use like search first index
-    result_query = async_to_sync(search_engine)(query)
-    if not result_query:
-        messages.warning(request, "No results found for your query.")
-        return render(request, 'base/home.html')
-    else:
-        search_index =  result_query[0]
-        return redirect('music_player', music_name=search_index["name"])
 
 
 
@@ -195,6 +178,7 @@ def home(request):
     if 'search' in request.GET:
         return search_music(request)
     # We're grabbing via the input's name
+    
         
     
 
@@ -204,5 +188,10 @@ def home(request):
 def music_player(request, music_name: str):
     if 'search' in request.GET:
         return search_music(request)
-    return render(request, 'base/music_player.html', context={"music_name": music_name}) 
+    return render(request, 'base/music_players/music_player.html', context={"music_name": music_name}) 
+def artist_page(request, artist_name: str):
+    if 'search' in request.GET:
+        return search_music(request)
+    return render(request, 'base/music_players/artist_view.html', context={"artist_name": artist_name}) 
+
 
