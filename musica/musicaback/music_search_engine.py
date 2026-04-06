@@ -129,34 +129,33 @@ async def music_search_view(request, query):
         a["type"] = "artist"
     # Let's create an algorithimn that determines the best results based on the query and the rank of the music, we can also give more weight to the music that starts with the query, then the music that contains the query, then the music that has any word in the query, and then the rest. We can also give more weight to the music that has a higher rank. We can also give more weight to the music that has a higher rank if it starts with the query. We can also give more weight to the music that has a higher rank if it contains the query. We can also give more weight to the music that has a higher rank if it has any word in the query.
 
-    def score(item):
+    def score(item) -> int:
         name = item["name"].lower()
+        score_system = 0
         if name == query_lower:
-            return 1000
+            score_system = 1000
 
         # Starts with query
-        if name.startswith(query_lower):
-            return 800
+        elif name.startswith(query_lower):
+            score_system = 800
 
-        if query_lower in name:
-            return 500
+        elif query_lower in name:
+            score_system = 500
 
 
-        if any(word in name for word in query_lower.split()):
-            return 200
+        elif any(word in name for word in query_lower.split()):
+            score_system = 200
 
-        return 0
+        return score_system + item.get("rank", 0)  # Add rank as a tiebreaker
 
     combined = tracks + artists 
 
-    combined_sorted = sorted(
-        combined,
-        key=lambda x: (score(x), x.get("rank", 0)),
-        reverse=True
-    )
+    tracks_sorted = sorted(tracks, key=lambda x: (score(x), x.get("rank", 0)), reverse=True)
+    artists_sorted = sorted(artists, key=lambda x: (score(x), x.get("rank", 0)), reverse=True)
 
     return JsonResponse({
-        "results": combined_sorted[:10]
+        "tracks": tracks_sorted[:5],  # Return top 5 tracks
+        "artists": artists_sorted[:5],  # Return top 5 artists
     })
 
 def music_exists_view(request, song_name) -> bool:
