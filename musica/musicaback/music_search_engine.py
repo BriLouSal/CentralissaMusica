@@ -116,21 +116,48 @@ def search_artist(query: str):
 
 
 async def music_search_view(request, query):
+    query_lower = query.lower()
+
     tracks = await search_engine(query)
     artists = await sync_to_async(search_artist)(query)
 
+    # Tag types
     for t in tracks:
         t["type"] = "track"
 
     for a in artists:
         a["type"] = "artist"
+    # Let's create an algorithimn that determines the best results based on the query and the rank of the music, we can also give more weight to the music that starts with the query, then the music that contains the query, then the music that has any word in the query, and then the rest. We can also give more weight to the music that has a higher rank. We can also give more weight to the music that has a higher rank if it starts with the query. We can also give more weight to the music that has a higher rank if it contains the query. We can also give more weight to the music that has a higher rank if it has any word in the query.
 
-    combined = artists + tracks
+    def score(item):
+        name = item["name"].lower()
+        if name == query_lower:
+            return 1000
+
+        # Starts with query
+        if name.startswith(query_lower):
+            return 800
+
+        if query_lower in name:
+            return 500
+
+
+        if any(word in name for word in query_lower.split()):
+            return 200
+
+        return 0
+
+    combined = tracks + artists 
+
+    combined_sorted = sorted(
+        combined,
+        key=lambda x: (score(x), x.get("rank", 0)),
+        reverse=True
+    )
 
     return JsonResponse({
-        "results": combined
+        "results": combined_sorted[:10]
     })
-
 
 def music_exists_view(request, song_name) -> bool:
     # Check if the song exists in our database or via API
@@ -164,4 +191,11 @@ def search_music(request):
         if len(result_query) == 0 or not music_exists_view(request, search_index["name"]):
             messages.warning(request, "No results found for your query.")
             return redirect(referer)
-        return redirect('music_player', music_name=search_index["name"])
+        
+        
+        # We also need to make a new redirect route, we need to check if we're searching the artist or the music, if artist, then we redirect to the artist page, if music, then we redirect to the music player page. We can also make it so that if the search result is an artist, we show the top 5 songs of that artist in the search results for better user experience.
+        if search_index["type"] == "artist":
+            return redirect('artist_page', artist_name=search_index["name"])
+        else:
+            return redirect('music_player', music_name=search_index["name"])
+        
