@@ -36,6 +36,7 @@ from datetime import datetime, date
 from dateutil.relativedelta import relativedelta
 import requests
 from .music_search_engine import search_music
+from .auto_mixer import bpm
 
 
 # Create your views here.
@@ -188,7 +189,9 @@ def home(request):
 def music_player(request, music_name: str):
     if 'search' in request.GET:
         return search_music(request)
-    return render(request, 'base/music_players/music_player.html', context={"music_name": music_name}) 
+    bpm_value = bpm(music_name)
+    print(f"BPM of {music_name}: {bpm_value}")
+    return render(request, 'base/music_players/music_player.html', context={"music_name": music_name, "bpm": bpm_value}) 
 def artist_page(request, artist_name: str):
     if 'search' in request.GET:
         return search_music(request)

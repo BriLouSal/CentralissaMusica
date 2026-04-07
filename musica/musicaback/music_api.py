@@ -41,6 +41,37 @@ SPOTIFY_SECRET_KEY = os.getenv('SPOTIFY_SECRET_KEY')
 
 
 
+SOUNDCHARTS_API_KEY = os.getenv('SOUNDCHARTS_API_KEY')
+SOUNDCHARTS_APP_ID = os.getenv('SOUNDCHARTS_APP_ID')
+
+
+
+
+# Reference: https://medium.com/@michaelmiller0998/extracting-song-data-from-spotify-using-spotipy-167728d0a924
+def grab_uuid(music_name: str) -> str:
+    # This is where we would grab the bpm of the music, and then we would use that to create a mix playlist for the user.
+    # We're able to generaete like a mixed playlist or even compare if they're compaitable 
+    
+    # We're using soundchart APi for this endeavor
+    headers = {
+    'x-app-id':  SOUNDCHARTS_APP_ID,
+    'x-api-key': SOUNDCHARTS_API_KEY,
+    }
+    url = f"https://customer.api.soundcharts.com/api/v2/song/search/{music_name}"
+    
+    
+    params = {
+    'offset': '0',
+    'limit': '10',
+    }
+    response = requests.get(url, headers=headers, params=params)
+    data = response.json()
+    if not data.get('items'):
+        return None
+    song_id = data['items'][0]['uuid']
+    return song_id
+
+
 
 # Connect Spotify API, like we have with 
 @login_required
