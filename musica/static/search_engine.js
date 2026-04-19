@@ -71,7 +71,7 @@ function renderItem(item) {
     const redirectUrl = isArtist
     // We need to encode the name to make sure it works with special characters and spaces, we may have like a special character like $ in the name, or spaces, so we need to encode it to make sure it works correctly in the URL
         ? `/artist/${encodeURIComponent(item.name)}/`
-        : `/music-player/${encodeURIComponent(item.name)}/`;
+        : `/music/${encodeURIComponent(item.name)}/`;
 
     return `
         <div class="flex items-center gap-3 px-4 py-2 hover:bg-gray-800 cursor-pointer"
