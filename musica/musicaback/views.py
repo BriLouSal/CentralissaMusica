@@ -19,6 +19,7 @@ from django.core.cache import cache
 from django.dispatch import receiver
 import threading
 
+
 import secrets
 
 import json
@@ -35,7 +36,7 @@ from datetime import datetime, date
 
 from dateutil.relativedelta import relativedelta
 import requests
-from .music_search_engine import search_music
+from .music_search_engine import search_engine, search_music
 from .auto_mixer import grab_music_bpm
 
 
@@ -127,6 +128,10 @@ def loginpage(request):
         password = request.POST.get('password')
 
         user = authenticate(request, username=email, password=password)
+        
+        if getattr((request, "axes_locked_out", False)):
+            messages.warning(request, "Please verify your email first.")
+            return redirect('timeout')
 
 
         if user is not None:
@@ -197,4 +202,6 @@ def artist_page(request, artist_name: str):
         return search_music(request)
     return render(request, 'base/music_players/artist_view.html', context={"artist_name": artist_name}) 
 
-
+def grab_search_result(request, query):
+    # This is where we would grab the search result from the search engine and then we would use that to display the search result to the user. We can also make it so that if the search result is an artist, we show the top 5 songs of that artist in the search results for better user experience.
+    return render(request, 'base/music_players/search.html', context={"query": query})

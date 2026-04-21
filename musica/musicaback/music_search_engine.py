@@ -179,22 +179,33 @@ def search_music(request):
         messages.warning(request, "Please enter a search query.")
         return redirect(referer)
         # We also want to also use like search first index
+        
+        
+        
+        
     result_query = async_to_sync(search_engine)(query)
     if not result_query:
         messages.warning(request, "No results found for your query.")
         return render(request, 'base/home.html')
-    else:
-        search_index =  result_query[0]
-        # Check if music exists actually, because
-        # we could end up with a situation where the search result has nothing right
-        if len(result_query) == 0 or not music_exists_view(request, search_index["name"]):
-            messages.warning(request, "No results found for your query.")
-            return redirect(referer)
-        
+
         
         # We also need to make a new redirect route, we need to check if we're searching the artist or the music, if artist, then we redirect to the artist page, if music, then we redirect to the music player page. We can also make it so that if the search result is an artist, we show the top 5 songs of that artist in the search results for better user experience.
-        if search_index["type"] == "artist":
-            return redirect('artist_page', artist_name=search_index["name"])
-        else:
-            return redirect('music_player', music_name=search_index["name"])
         
+        # But in this case we'd want to create like a program for
+        # a situation so enter -> search
+    tracks = async_to_sync(search_engine)(query)
+    artists = search_artist(query)
+        
+    return render(request, 'base/music_players/search.html', context={
+        'query': query,
+        'artists': artists,
+        'tracks': tracks
+
+    })
+        
+        
+        
+        
+        
+        
+

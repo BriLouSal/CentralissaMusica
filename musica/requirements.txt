@@ -7,3 +7,5 @@ spotipy
 billboard.py
 soundcharts
 demucs
+librosa
+pedalboard

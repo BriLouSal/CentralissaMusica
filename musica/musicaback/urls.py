@@ -3,7 +3,8 @@ from django.urls import path, include
 from django.conf import settings
 
 
-from . import views, music_api, music_search_engine,auto_mixer
+
+from . import views, music_api, music_search_engine,auto_mixer, rate_limit_auth
 
 
 urlpatterns = [
@@ -17,6 +18,8 @@ urlpatterns = [
     
     path('login/' , views.loginpage, name='login'),
     
+    path('timeout/', rate_limit_auth.timeout_view, name='timeout'),
+    
     path('spotify/' , music_api.spotify_connect, name='spotify'),
     
     path('spotify/callback/', music_api.spotify_callback_to_views, name='spotify_callback'),
@@ -25,6 +28,7 @@ urlpatterns = [
     
     
     path('artist/<str:artist_name>/', views.artist_page, name='artist_page'),
+    
     path('music/<str:music_name>/', views.music_player, name='music_player'),
     
 ]
@@ -34,3 +38,4 @@ if settings.DEBUG:
     urlpatterns += [
         path("__reload__/", include("django_browser_reload.urls")),
     ]
+    

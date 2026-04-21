@@ -39,9 +39,14 @@ AXES_FAILURE_LIMIT = 5  # Lock after 5 failed attempts
 AXES_COOLOFF_TIME = timedelta(minutes=30)  # Temporary lock for 30 minutes
 AXES_LOCKOUT_TEMPLATE = 'account_locked.html'  # Custom friendly message
 AXES_LOCKOUT_PARAMETERS = ['username', 'ip_address']  # Track by both username & IP
+
 AXES_RESET_ON_SUCCESS = True  # Reset failure count after a successful log
 AXES_USERNAME_FORM_FIELD = 'username'  # Use email field for login attempts
 # Application definition
+
+AXES_LOCKOUT_CALLABLE = 'timeout/' 
+
+
 
 
 TAILWIND_APP_NAME = "theme"
