@@ -25,9 +25,10 @@ urlpatterns = [
     path('spotify/callback/', music_api.spotify_callback_to_views, name='spotify_callback'),
     
     path('music-search/autocomplete/<str:query>/', music_search_engine.music_search_view, name='search_views'),
+
     
     
-    path('artist/<str:artist_name>/', views.artist_page, name='artist_page'),
+    path('artist/<int:artist_id>/', views.artist_page, name='artist_page'),
     
     path('music/<str:music_name>/', views.music_player, name='music_player'),
     

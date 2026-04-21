@@ -32,7 +32,11 @@
       </div>
 
       <div class="flex justify-center">
-        <form method="GET" action="{% url 'home' %}" class="w-full max-w-xl relative">
+        <form
+          method="GET"
+          action="{% url 'home' %}"
+          class="w-full max-w-xl relative"
+        >
           <input
             type="text"
             id="music-search"
@@ -60,46 +64,39 @@
               </div>
             </div>
           </a>
-
         </div>
       </div>
-
-
-
-
-      
-
     </div>
 
     <!-- For this one this is the main container for like top artists, albums, etc. -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-6 mt-4">
-
       <!-- Artists -->
-      <div>
-        <h2 class="text-white text-xl font-bold mb-4">Top Artists</h2>
-        <div class="grid grid-cols-1 gap-4">
-          {% for artist in artists %}
-            <div class="bg-gray-800 p-4 rounded-xl">
-              <h3 class="text-white text-lg font-bold">{{ artist.name }}</h3>
-              <p class="text-gray-400">{{ artist.description }}</p>
-            </div>
-          {% endfor %}
+      {% for artist in artists %}
+      <a
+        href="{% url 'artist_page' artist.id %}"
+        class="flex items-center gap-4 bg-gray-900 hover:bg-gray-800 p-4 rounded-xl transition"
+      >
+        <img src="{{ artist.image }}" class="w-14 h-14 rounded-full" />
+
+        <div>
+          <div class="text-white font-semibold">{{ artist.name }}</div>
+          <div class="text-gray-400 text-sm">Artist</div>
         </div>
-      </div>
+      </a>
+      {% endfor %}
 
       <!-- Tracks -->
       <div>
         <h2 class="text-white text-xl font-bold mb-4">Top Tracks</h2>
-        <div class="grid grid-cols-1 gap-4">
+        <div class="grid grid-row-1 gap-4">
           {% for track in tracks %}
-            <div class="bg-gray-800 p-4 rounded-xl">
-              <h3 class="text-white text-lg font-bold">{{ track.name }}</h3>
-              <p class="text-gray-400">{{ track.artist }}</p>
-            </div>
+          <div class="bg-gray-800 p-4 rounded-xl">
+            <h3 class="text-white text-lg font-bold">{{ track.name }}</h3>
+            <p class="text-gray-400">{{ track.artist }}</p>
+          </div>
           {% endfor %}
         </div>
       </div>
-
     </div>
 
     {% block scripts %}
@@ -109,7 +106,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/animejs/dist/bundles/anime.umd.min.js"></script>
-
 
     <script src="{% static 'search_engine.js' %}" defer></script>
     <script src="{% static 'music_player.js' %}" defer></script>

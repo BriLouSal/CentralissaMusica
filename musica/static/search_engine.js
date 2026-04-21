@@ -70,7 +70,7 @@ function renderItem(item) {
 
     const redirectUrl = isArtist
     // We need to encode the name to make sure it works with special characters and spaces, we may have like a special character like $ in the name, or spaces, so we need to encode it to make sure it works correctly in the URL
-        ? `/artist/${encodeURIComponent(item.name)}/`
+        ? `/artist/${item.id}}/`
         : `/music/${encodeURIComponent(item.name)}/`;
 
     return `

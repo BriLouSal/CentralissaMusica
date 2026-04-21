@@ -193,8 +193,8 @@ def search_music(request):
         
         # But in this case we'd want to create like a program for
         # a situation so enter -> search
-    tracks = async_to_sync(search_engine)(query)
-    artists = search_artist(query)
+    tracks = async_to_sync(search_engine)(query)[:10]
+    artists = search_artist(query)[:10]
         
     return render(request, 'base/music_players/search.html', context={
         'query': query,
