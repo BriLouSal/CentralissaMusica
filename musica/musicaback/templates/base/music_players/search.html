@@ -86,17 +86,20 @@
       {% endfor %}
 
       <!-- Tracks -->
-      <div>
-        <h2 class="text-white text-xl font-bold mb-4">Top Tracks</h2>
-        <div class="grid grid-row-1 gap-4">
-          {% for track in tracks %}
-          <div class="bg-gray-800 p-4 rounded-xl">
-            <h3 class="text-white text-lg font-bold">{{ track.name }}</h3>
-            <p class="text-gray-400">{{ track.artist }}</p>
-          </div>
-          {% endfor %}
+
+      {% for track in tracks %}
+      <a
+        href="{% url 'music_player' track.name %}"
+        class="flex items-center gap-4 bg-gray-900 hover:bg-gray-800 p-4 rounded-xl transition"
+      >
+        <img src="{{ track.image }}" class="w-14 h-14 rounded-full" />
+
+        <div>
+          <div class="text-white font-semibold">{{ track.name }}</div>
+          <div class="text-gray-400 text-sm">Track</div>
         </div>
-      </div>
+      </a>
+      {% endfor %}
     </div>
 
     {% block scripts %}
