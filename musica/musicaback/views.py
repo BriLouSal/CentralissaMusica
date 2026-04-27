@@ -184,10 +184,6 @@ def home(request):
     if 'search' in request.GET:
         return search_music(request)
     # We're grabbing via the input's name
-    
-        
-    
-
     return render(request, 'base/home.html')
 
 
@@ -208,10 +204,21 @@ def music_player(request, music_name: str, artist_name: str):
 def artist_page(request, artist_id: str):
     if 'search' in request.GET:
         return search_music(request)
+    res = requests.get(f"https://api.deezer.com/artist/{artist_id}")
+    data = res.json()
+
+    context = {
+        "artist_id": artist_id,
+        "artist_name": data.get("name"),
+        "image": data.get("picture_big"),
+    }
     
-    return render(request, 'base/music_players/artist_view.html', {"artist_id": artist_id})
+    return render(request, 'base/music_players/artist_view.html', context=context)
 
 def grab_search_result(request, query):
     # This is where we would grab the search result from the search engine and then we would use that to display the search result to the user. We can also make it so that if the search result is an artist, we show the top 5 songs of that artist in the search results for better user experience.
-    
     return render(request, 'base/music_players/search.html', context={"query": query})
+
+def album_page(request,  album_name: str):
+    return (request, 'base/music_players/album_view.html')
+    

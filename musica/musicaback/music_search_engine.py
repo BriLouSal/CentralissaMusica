@@ -84,6 +84,40 @@ def search_engine(query: str):
     
     cache.set(cache_key, items, timeout=60 * 60  *24 * 7)  # Cache for 7 days
     return items[:10]  # Return top 10 results
+def search_album(query: str):
+    query = query.strip()
+    cache_key = f"deezer_album_search:{query}"
+    
+    cached = cache.get(cache_key)
+    if cached: 
+        return cached
+    
+    
+    res = requests.get(
+        "https://api.deezer.com/search/artist",
+        params={'q': query}
+    )
+    results = res.json.get('data', [])
+
+    albums = []
+    for album in results[:50]:
+        albums.append({
+            "type": "album",
+            "name": album["title"],
+            "id": album["id"],
+            "artist": album["artist"]["name"],
+            "artist_id": album["artist"]["id"],
+            "image": album.get("cover_medium"),
+            "image_big": album.get("cover_big"),
+            "rank": album.get("fans", 0), 
+            "url": album["link"],
+        })
+        
+    if not albums:
+        return []
+    sorted_albums = sorted(albums, key=lambda x: x.get("rank", 0), reverse=True)
+    cache.set(cache_key, sorted_albums, timeout=60*60*24*7)
+    return sorted_albums[:10]
 
 
 def search_artist(query: str):
@@ -204,6 +238,7 @@ def search_music(request):
         # a situation so enter -> search
     tracks = async_to_sync(search_engine)(query)[:10]
     artists = search_artist(query)[:10]
+    albums = search_album(query)[:10]
     
     
     # We're having an issue with our artist search engine
@@ -253,6 +288,7 @@ def search_music(request):
             return 0.35
         return 0.0
     max_rank = max((a.get("rank", 0) for a in artists), default=1)
+   
     def rank_artist(artist):
         name = artist["name"].lower()
         artist_text = match(name, query_lower)
@@ -277,6 +313,17 @@ def search_music(request):
             0.70 * track_name + 0.30 * popularity
         )
                                 
+    def rank_album(album: str):
+        album_name = match(album['name'], query_lower)
+        
+        max_album = max((a.get('rank',0 ) for a in albums), default=1)
+        popularity = normaizer(track.get('rank',0), max_album)
+        
+        
+        return(
+            (0.70 * album_name) + 0.30 * popularity
+        )
+        
     # Now we can look for the top artist and top track, and check
     # if not there then None 
     # Sort the artist via my rank-pair x frequency hybrid
@@ -287,6 +334,11 @@ def search_music(request):
     
     top_artist = artists[0] if artists else None
     top_track = tracks[0] if tracks else None
+    top_album = sorted(albums, key=rank_album, reverse=True)[0] if albums else None
+    
+    
+    
+
     
     artist_score = rank_artist(top_artist) if top_artist else 0
     track_score = rank_track(top_track) if top_track else 0

@@ -6,7 +6,7 @@
     {% tailwind_css %}
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{{ query }}</title>
+    <title>{{ artist_name }}</title>
   </head>
   <body
     id="home-bg"
@@ -151,6 +151,31 @@
             {% endfor %}
           </div>
         </div>
+
+
+
+        <div class="mt-12">
+          <div class="flex justify-between items-center mb-5">
+            <h2 class="text-white text-2xl font-bold">Albums</h2>
+          </div>
+
+          <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
+            {% for artist in artists %}
+            <a
+              href="{% url 'artist_page' artist.id %}"
+              class="text-center group"
+            >
+              <img
+                src="{{ artist.image }}"
+                class="w-32 h-32 rounded-full object-cover mx-auto mb-3 group-hover:scale-105 transition"
+              />
+              <div class="text-white font-bold">{{ artist.name }}</div>
+              <div class="text-gray-300 text-sm">Artist</div>
+            </a>
+            {% endfor %}
+          </div>
+        </div>
+      
       </div>
     </div>
 
