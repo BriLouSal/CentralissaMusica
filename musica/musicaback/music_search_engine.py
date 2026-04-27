@@ -31,7 +31,6 @@ from spotipy.oauth2 import SpotifyOAuth
 from asgiref.sync import sync_to_async, async_to_sync
 
 
-
 import requests
 
 load_dotenv()
@@ -68,6 +67,7 @@ def search_engine(query: str):
         data.append({
             "name": item["title"],
             "artist": item["artist"]["name"],
+            "artist_id": item["artist"]["id"], 
             "album": item["album"]["title"],
             "type": "track",
             "id": item["id"],
@@ -204,41 +204,116 @@ def search_music(request):
         # a situation so enter -> search
     tracks = async_to_sync(search_engine)(query)[:10]
     artists = search_artist(query)[:10]
+    
+    
+    # We're having an issue with our artist search engine
+    # I purpose that we should check the tracks name and see 
+    # how many times artist appears in the music such as
+    # Chappell Roan: Pink Pony Club, etc.
+    
+    
+    frequency_of_artist_track = Counter(track['artist'].lower() for track in tracks)
+    existing_artist = {artist['name'].lower() for artist in artists}
+    query_lower = query.lower()
+    
+    for track in tracks:
+        artist_name = track['artist']
+        if artist_name.lower() not in existing_artist:
+                    artists.append({
+            "name": artist_name,
+            "id": track.get("artist_id"), 
+            "url": "#",
+            "image": track["image"],
+            "rank": track.get("rank", 0),
+            "type": "artist",
+        })
+        existing_artist.add(artist_name.lower())
+        # Let's use the ranked pair algorithim, I purpose that
+        # it'll be much more accurate rather than the frequency
+        # Conisder a case where  two artist could have the two songs
+        # with same name, but we clearly choose the most popular
+        # and the highest ranking, a hybrid between frequency + ranked pair
+        
+    
+    def normaizer(value, max_val):
+        if max_val == 0:
+            return 0
+        else: 
+            return value / max_val
+    def match(name, query):
+        name = name.lower()
+        # Check if the name matches with query
+        if name == query:
+            return 1.0
+        elif name.startswith(query):
+            return 0.85
+        elif query in name:
+            return 0.65
+        elif any(word in name for word in query.split()):
+            return 0.35
+        return 0.0
+    max_rank = max((a.get("rank", 0) for a in artists), default=1)
+    def rank_artist(artist):
+        name = artist["name"].lower()
+        artist_text = match(name, query_lower)
+        track_score = min(frequency_of_artist_track.get(name, 0) / 3, 1.0)
+        popularity = normaizer(artist.get("rank", 0), max_rank)
+
+        return (
+            0.45 * artist_text +
+            0.35 * track_score +
+            0.20 * popularity
+        )
+                                
+    # We're having another issue, we need to have a rank for track
+    def rank_track(track: str):
+        track_name = match(track['name'], query_lower)
+        
+        max_track = max((t.get('rank',0 ) for t in tracks), default=1)
+        popularity = normaizer(track.get('rank',0), max_track)
+        
+        
+        return(
+            0.70 * track_name + 0.30 * popularity
+        )
+                                
     # Now we can look for the top artist and top track, and check
     # if not there then None 
-    top_artist = artists[0] if artists else None
-    top_tracks = tracks[0] if tracks else None
-    if top_tracks == query.lower() in top_artist['name'].lower():
-        top_result = {
-        "type": "artist",
-        "name": top_artist["name"],
-        "image": top_artist["image"],
-        "id": top_artist["id"],
-    }
-    elif top_tracks:
-        top_result = {
-            "type": "track",
-            "name": top_tracks["name"],
-            "artist": top_tracks["artist"],
-            "image": top_tracks["image"],
-            "id": top_tracks["id"],
-        }
-    else:
-        top_result = None
-        
+    # Sort the artist via my rank-pair x frequency hybrid
+    
 
     
-        
+    artists = sorted(artists, key=rank_artist, reverse=True)
+    
+    top_artist = artists[0] if artists else None
+    top_track = tracks[0] if tracks else None
+    
+    artist_score = rank_artist(top_artist) if top_artist else 0
+    track_score = rank_track(top_track) if top_track else 0
+
+    if top_track and track_score >= artist_score:
+        top_result = {
+            "type": "track",
+            "name": top_track["name"],
+            "artist": top_track["artist"],
+            "image": top_track["image"],
+            "id": top_track["id"],
+        }
+
+    elif top_artist:
+        top_result = {
+            "type": "artist",
+            "name": top_artist["name"],
+            "image": top_artist["image"],
+            "id": top_artist["id"],
+        }
+
+    else:
+        top_result = None
+     
     return render(request, 'base/music_players/search.html', context={
         'query': query,
         'artists': artists[:6],
         'tracks': tracks[:6],
         'top_result': top_result,
     })
-        
-        
-        
-        
-        
-        
-

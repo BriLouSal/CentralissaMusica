@@ -30,7 +30,7 @@ urlpatterns = [
     
     path('artist/<int:artist_id>/', views.artist_page, name='artist_page'),
     
-    path('music/<str:music_name>/', views.music_player, name='music_player'),
+    path('music/<str:artist_name>/<str:music_name>/', views.music_player, name='music_player'),
     
 ]
 
