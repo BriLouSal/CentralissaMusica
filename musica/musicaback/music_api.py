@@ -135,6 +135,3 @@ def billboard_top_100(request):
         return JsonResponse(data)
     else:
         return JsonResponse({"error": "Failed to fetch data from Billboard API"}, status=response.status_code)
-    
-def music_db(music: str):
-    pass

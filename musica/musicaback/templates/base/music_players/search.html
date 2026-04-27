@@ -69,37 +69,96 @@
     </div>
 
     <!-- For this one this is the main container for like top artists, albums, etc. -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-6 mt-4">
-      <!-- Artists -->
-      {% for artist in artists %}
-      <a
-        href="{% url 'artist_page' artist.id %}"
-        class="flex items-center gap-4 bg-gray-900 hover:bg-gray-800 p-4 rounded-xl transition"
-      >
-        <img src="{{ artist.image }}" class="w-14 h-14 rounded-full" />
+    <div class="px-20 mt-10">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Top Result -->
+        <div>
+          <h2 class="text-white text-2xl font-bold mb-5">Top result</h2>
+
+          {% if top_result %}
+          <!-- Check if it's a artist that is the top result, or track -->
+          <a
+            {%
+            if
+            top_result.type=""
+            ="artist"
+            %}
+            href="{% url 'artist_page' top_result.id %}"
+            {%
+            else
+            %}
+            href="{% url 'music_player' top_result.name %}"
+            {%
+            endif
+            %}
+            class="block bg-purple-950/60 hover:bg-purple-900/70 border border-white/10 rounded-2xl p-8 transition"
+          >
+            <img
+              src="{{ top_result.image }}"
+              class="w-32 h-32 rounded-full object-cover mb-10"
+            />
+
+            <h1 class="text-white text-4xl font-extrabold mb-4">
+              {{ top_result.name }}
+            </h1>
+
+            <span
+              class="inline-block bg-white/10 text-white px-4 py-2 rounded-full text-sm font-semibold"
+            >
+              {{ top_result.type|title }}
+            </span>
+          </a>
+          {% endif %}
+        </div>
+
+        <!-- Tracks -->
 
         <div>
-          <div class="text-white font-semibold">{{ artist.name }}</div>
-          <div class="text-gray-400 text-sm">Artist</div>
+          <div class="flex justify-between items-center mb-5">
+            <h2 class="text-white text-2xl font-bold">Tracks</h2>
+          </div>
+
+          <div class="space-y-4">
+            {% for track in tracks %}
+            <a
+              href="{% url 'music_player' track.name %}"
+              class="flex items-center gap-4 bg-gray-900 hover:bg-gray-800 p-4 rounded-xl transition"
+            >
+              <img src="{{ track.image }}" class="w-14 h-14 rounded-full" />
+
+              <div>
+                <div class="text-white font-semibold">{{ track.name }}</div>
+                <div class="text-gray-400 text-sm">Track</div>
+              </div>
+            </a>
+            {% endfor %}
+          </div>
         </div>
-      </a>
-      {% endfor %}
 
-      <!-- Tracks -->
+        <!-- Wrapper for Artists -->
 
-      {% for track in tracks %}
-      <a
-        href="{% url 'music_player' track.name %}"
-        class="flex items-center gap-4 bg-gray-900 hover:bg-gray-800 p-4 rounded-xl transition"
-      >
-        <img src="{{ track.image }}" class="w-14 h-14 rounded-full" />
+        <div class="mt-12">
+          <div class="flex justify-between items-center mb-5">
+            <h2 class="text-white text-2xl font-bold">Artists</h2>
+          </div>
 
-        <div>
-          <div class="text-white font-semibold">{{ track.name }}</div>
-          <div class="text-gray-400 text-sm">Track</div>
+          <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
+            {% for artist in artists %}
+            <a
+              href="{% url 'artist_page' artist.id %}"
+              class="text-center group"
+            >
+              <img
+                src="{{ artist.image }}"
+                class="w-32 h-32 rounded-full object-cover mx-auto mb-3 group-hover:scale-105 transition"
+              />
+              <div class="text-white font-bold">{{ artist.name }}</div>
+              <div class="text-gray-300 text-sm">Artist</div>
+            </a>
+            {% endfor %}
+          </div>
         </div>
-      </a>
-      {% endfor %}
+      </div>
     </div>
 
     {% block scripts %}

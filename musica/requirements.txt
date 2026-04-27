@@ -9,3 +9,6 @@ soundcharts
 demucs
 librosa
 pedalboard
+spotDL
+spaudiopy
+

@@ -200,8 +200,9 @@ def music_player(request, music_name: str):
 def artist_page(request, artist_id: str):
     if 'search' in request.GET:
         return search_music(request)
-    return render(request, 'base/music_players/artist_view.html', {"artist_id": artist_id})
+    return render(request, 'music_players/artist_view.html', {"artist_id": artist_id})
 
 def grab_search_result(request, query):
     # This is where we would grab the search result from the search engine and then we would use that to display the search result to the user. We can also make it so that if the search result is an artist, we show the top 5 songs of that artist in the search results for better user experience.
+    
     return render(request, 'base/music_players/search.html', context={"query": query})

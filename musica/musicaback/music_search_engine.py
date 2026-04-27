@@ -1,3 +1,5 @@
+from collections import Counter
+
 from django.shortcuts import render, redirect, reverse
 from django.contrib.auth import logout, authenticate, login
 from django.contrib.auth.models import User
@@ -120,6 +122,11 @@ async def music_search_view(request, query):
 
     tracks = await search_engine(query)
     artists = await sync_to_async(search_artist)(query)
+    # Check if the artist has the songs such as Michael Jackson
+    # x Thriller, we'd want Michael jackson to be in the top of the artist
+    artist_frequency = Counter(
+    t["artist"].lower() for t in tracks
+)
 
     # Tag types
     for t in tracks:
@@ -130,7 +137,7 @@ async def music_search_view(request, query):
     # Let's create an algorithimn that determines the best results based on the query and the rank of the music, we can also give more weight to the music that starts with the query, then the music that contains the query, then the music that has any word in the query, and then the rest. We can also give more weight to the music that has a higher rank. We can also give more weight to the music that has a higher rank if it starts with the query. We can also give more weight to the music that has a higher rank if it contains the query. We can also give more weight to the music that has a higher rank if it has any word in the query.
 
     def score(item) -> int:
-        name = item["name"].lower()
+        name = item["name"]
         score_system = 0
         if name == query_lower:
             score_system = 1000
@@ -145,6 +152,8 @@ async def music_search_view(request, query):
 
         elif any(word in name for word in query_lower.split()):
             score_system = 200
+        
+        score_system += artist_frequency.get(item.get("artist", "").lower(), 0) * 10000  # Boost score based on artist frequency
 
         return score_system + item.get("rank", 0)  # Add rank as a tiebreaker
 
@@ -195,12 +204,36 @@ def search_music(request):
         # a situation so enter -> search
     tracks = async_to_sync(search_engine)(query)[:10]
     artists = search_artist(query)[:10]
+    # Now we can look for the top artist and top track, and check
+    # if not there then None 
+    top_artist = artists[0] if artists else None
+    top_tracks = tracks[0] if tracks else None
+    if top_tracks == query.lower() in top_artist['name'].lower():
+        top_result = {
+        "type": "artist",
+        "name": top_artist["name"],
+        "image": top_artist["image"],
+        "id": top_artist["id"],
+    }
+    elif top_tracks:
+        top_result = {
+            "type": "track",
+            "name": top_tracks["name"],
+            "artist": top_tracks["artist"],
+            "image": top_tracks["image"],
+            "id": top_tracks["id"],
+        }
+    else:
+        top_result = None
+        
+
+    
         
     return render(request, 'base/music_players/search.html', context={
         'query': query,
-        'artists': artists,
-        'tracks': tracks
-
+        'artists': artists[:6],
+        'tracks': tracks[:6],
+        'top_result': top_result,
     })
         
         
