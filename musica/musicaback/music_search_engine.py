@@ -94,10 +94,10 @@ def search_album(query: str):
     
     
     res = requests.get(
-        "https://api.deezer.com/search/artist",
+        "https://api.deezer.com/search/album",
         params={'q': query}
     )
-    results = res.json.get('data', [])
+    results = res.json().get('data', [])
 
     albums = []
     for album in results[:50]:
@@ -313,15 +313,17 @@ def search_music(request):
             0.70 * track_name + 0.30 * popularity
         )
                                 
-    def rank_album(album: str):
-        album_name = match(album['name'], query_lower)
-        
-        max_album = max((a.get('rank',0 ) for a in albums), default=1)
-        popularity = normaizer(track.get('rank',0), max_album)
-        
-        
-        return(
-            (0.70 * album_name) + 0.30 * popularity
+    max_album_rank = max((a.get("rank", 0) for a in albums), default=1)
+
+    def rank_album(album):
+        album_text = match(album["name"], query_lower)
+        artist_text = match(album["artist"], query_lower)
+        popularity = normaizer(album.get("rank", 0), max_album_rank)
+
+        return (
+            0.55 * album_text +
+            0.25 * artist_text +
+            0.20 * popularity
         )
         
     # Now we can look for the top artist and top track, and check
@@ -342,14 +344,25 @@ def search_music(request):
     
     artist_score = rank_artist(top_artist) if top_artist else 0
     track_score = rank_track(top_track) if top_track else 0
+    album_score = rank_album(top_album) if top_album else 0
 
-    if top_track and track_score >= artist_score:
+
+    if top_track and track_score >= artist_score and track_score >= album_score:
         top_result = {
             "type": "track",
             "name": top_track["name"],
             "artist": top_track["artist"],
             "image": top_track["image"],
             "id": top_track["id"],
+        }
+
+    elif top_album and album_score >= artist_score:
+        top_result = {
+            "type": "album",
+            "name": top_album["name"],
+            "artist": top_album["artist"],
+            "image": top_album["image"],
+            "id": top_album["id"],
         }
 
     elif top_artist:
@@ -367,5 +380,6 @@ def search_music(request):
         'query': query,
         'artists': artists[:6],
         'tracks': tracks[:6],
+        'albums': albums[:6],
         'top_result': top_result,
     })

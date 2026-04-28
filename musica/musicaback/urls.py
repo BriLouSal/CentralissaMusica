@@ -32,6 +32,8 @@ urlpatterns = [
     
     path('music/<str:artist_name>/<str:music_name>/', views.music_player, name='music_player'),
     
+    path('album/<str:artist_name>/<str:album_name>/', views.album_page, name='album_view'),
+    
 ]
 
 if settings.DEBUG:

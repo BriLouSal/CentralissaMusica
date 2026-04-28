@@ -11,4 +11,4 @@ librosa
 pedalboard
 spotDL
 spaudiopy
-
+yt-dlp
