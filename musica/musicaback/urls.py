@@ -4,7 +4,7 @@ from django.conf import settings
 
 
 
-from . import views, music_api, music_search_engine,auto_mixer, rate_limit_auth
+from . import views, music_api, music_search_engine,auto_mixer, rate_limit_auth, music_player
 
 
 urlpatterns = [
@@ -30,10 +30,15 @@ urlpatterns = [
     
     path('artist/<int:artist_id>/', views.artist_page, name='artist_page'),
     
-    path('music/<str:artist_name>/<str:music_name>/', views.music_player, name='music_player'),
+    path('music/<str:artist_name>/<str:music_name>/', music_player.music_player, name='music_player'),
     
     path('album/<str:artist_name>/<str:album_name>/', views.album_page, name='album_view'),
     
+    path(
+    'play_music/<str:artist_name>/<str:music_name>/',
+    music_player.play_music,
+    name='play_music')
+   
 ]
 
 if settings.DEBUG:

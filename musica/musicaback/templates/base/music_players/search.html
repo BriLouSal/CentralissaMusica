@@ -81,7 +81,7 @@
       href="{% url 'artist_page' top_result.id %}"
       class="block bg-purple-950/60 hover:bg-purple-900/70 border border-white/10 rounded-2xl p-8 transition"
     >
-  {% elif top_result.type == "album"}
+  {% elif top_result.type == "album"%}
       <a
       href="{% url 'album_view' top_result.artist top_result.name %}"
       class="block bg-purple-950/60 hover:bg-purple-900/70 border border-white/10 rounded-2xl p-8 transition"

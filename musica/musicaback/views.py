@@ -213,5 +213,6 @@ def album_page(request, artist_name:str,  album_name: str):
         "album_name": album_name,
         "artist_name": artist_name,
     }
+    
     return render(request, 'base/music_players/album_view.html', context)
     

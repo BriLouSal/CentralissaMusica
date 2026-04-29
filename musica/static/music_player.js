@@ -1,25 +1,55 @@
-// We want to import the spotify music player
+const audio = document.getElementById("audio");
+const playBtn = document.getElementById("playBtn");
+const deck = document.getElementById("deckA");
 
+let angle = 0;
+let spinning = false;
 
+async function playMusic() {
+    // Fetch the data required for the music palyer and ensure that we can 
+    // like 
+  if (!audio.src) {
+    const dataRes = await fetch(
+      `/play_music/${encodeURIComponent(artist)}/${encodeURIComponent(music)}/`
+    );
 
-document.addEventListener("DOMContentLoaded", function() {
-    const spotifyPlayer = document.getElementById("spotify-player");
-    if (spotifyPlayer) {
-        // Get the Spotify URI from the data attribute
-        const spotifyUri = spotifyPlayer.getAttribute("data-spotify-uri");
-        // Create the iframe element
-        const iframe = document.createElement("iframe");
-        iframe.src = `https://open.spotify.com/embed/track/${spotifyUri}`;
-        iframe.width = "300";
-        iframe.height = "380";
-        iframe.frameBorder = "0";
-        iframe.allow = "encrypted-media";
-        // Append the iframe to the spotify player container
-        spotifyPlayer.appendChild(iframe);
-    }
+    const data = await dataRes.json();
+    audio.src = data.audio_url;
+  }
+
+  if (audio.paused) {
+    await audio.play();
+    grab_music_time();
+
+  } else {
+    audio.pause();
+  }
+}
+
+playBtn.addEventListener("click", playMusic);
+
+audio.addEventListener("play", () => {
+  spinning = true;
+  playBtn.textContent = "❚❚ Pause";
+});
+
+audio.addEventListener("pause", () => {
+  spinning = false;
+  playBtn.textContent = "▶ Play";
 });
 
 
+// Now we can grab the music_time of the audio
+function grab_music_time(){
+    audio.addEventListener('loadedmetadata', () => {
+        console.log("Duration: ", audio.duration)
 
+    });
 
+}
 
+function formatTime(seconds){
+    const minute = Math.floor(seconds/60);
+    const second = Math.floor(seconds    % 60).toString().padStart(2, "0");
+    return `${minute}:${second}`
+}
