@@ -26,6 +26,10 @@ async function playMusic() {
   }
 }
 
+// Create a listener that allows me to create  a vinyl like disk animation, which
+// I loved about, and I feel like it's very snazzy and I like it that way
+// so it's possible that we can do this
+
 playBtn.addEventListener("click", playMusic);
 
 audio.addEventListener("play", () => {
@@ -40,16 +44,8 @@ audio.addEventListener("pause", () => {
 
 
 // Now we can grab the music_time of the audio
-function grab_music_time(){
-    audio.addEventListener('loadedmetadata', () => {
-        console.log("Duration: ", audio.duration)
 
-    });
 
-}
-
-function formatTime(seconds){
-    const minute = Math.floor(seconds/60);
-    const second = Math.floor(seconds    % 60).toString().padStart(2, "0");
-    return `${minute}:${second}`
+async function queueRandomizedVersion(){
+  
 }

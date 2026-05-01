@@ -5,6 +5,7 @@ from django.conf import settings
 
 
 from . import views, music_api, music_search_engine,auto_mixer, rate_limit_auth, music_player
+from .music_player_queue.queue_system import randomized_playlist_request
 
 
 urlpatterns = [
@@ -33,6 +34,10 @@ urlpatterns = [
     path('music/<str:artist_name>/<str:music_name>/', music_player.music_player, name='music_player'),
     
     path('album/<str:artist_name>/<str:album_name>/', views.album_page, name='album_view'),
+    
+    path('musica/randomized_playlist/', randomized_playlist_request, name='random_playlist'),
+
+
     
     path(
     'play_music/<str:artist_name>/<str:music_name>/',
