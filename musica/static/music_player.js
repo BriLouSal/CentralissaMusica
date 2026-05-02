@@ -1,6 +1,6 @@
 const playBtn = document.getElementById('playBtn')
 const deck = document.getElementById('deckA')
-const sliderVolume = document.getElementById('slider')
+const sliderVolume = document.getElementById('volumeSlider')
 
 let angle = 0
 let spinning = false
@@ -106,9 +106,8 @@ function playNextSong(){
 }
 
 function VolumeBar(){
-  sliderVolume.addEventListener('drag', ({
-    
-    
+  sliderVolume.addEventListener('input', ({
+
   }));
 
 }
