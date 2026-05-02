@@ -1,28 +1,44 @@
-const audio = document.getElementById("audio");
-const playBtn = document.getElementById("playBtn");
-const deck = document.getElementById("deckA");
+const playBtn = document.getElementById('playBtn')
+const deck = document.getElementById('deckA')
+const sliderVolume = document.getElementById('slider')
 
-let angle = 0;
-let spinning = false;
+let angle = 0
+let spinning = false
 
-async function playMusic() {
-    // Fetch the data required for the music palyer and ensure that we can 
-    // like 
-  if (!audio.src) {
-    const dataRes = await fetch(
+let sound = null
+let queue = []
+let currentIndex = 0
+async function playMusic () {
+  // Fetch the url to grab the music and make the song play via the URL, which our python function handles to download the music and then play it for the user
+  if (!sound) {
+    const res = await fetch(
       `/play_music/${encodeURIComponent(artist)}/${encodeURIComponent(music)}/`
-    );
+    )
 
-    const data = await dataRes.json();
-    audio.src = data.audio_url;
-  }
+    const data = await res.json()
 
-  if (audio.paused) {
-    await audio.play();
-    grab_music_time();
+    sound = new Howl({
+      src: [data.audio_url],
+      html5: true,
 
+      onplay: () => {
+        spinning = true
+        playBtn.textContent = '❚❚'
+      },
+
+      onpause: () => {
+        spinning = false
+        playBtn.textContent = '▶'
+      }
+    })
+
+    sound.play()
   } else {
-    audio.pause();
+    if (sound.playing()) {
+      sound.pause()
+    } else {
+      sound.play()
+    }
   }
 }
 
@@ -30,22 +46,70 @@ async function playMusic() {
 // I loved about, and I feel like it's very snazzy and I like it that way
 // so it's possible that we can do this
 
-playBtn.addEventListener("click", playMusic);
+async function queueRandomizedVersion () {
+  const res = await fetch('/musica/randomized_playlist/')
+  const data = await res.json()
 
-audio.addEventListener("play", () => {
-  spinning = true;
-  playBtn.textContent = "❚❚ Pause";
-});
+  queue = data.playlist
+  currentIndex = 0
 
-audio.addEventListener("pause", () => {
-  spinning = false;
-  playBtn.textContent = "▶ Play";
-});
-
-
-// Now we can grab the music_time of the audio
-
-
-async function queueRandomizedVersion(){
-  
+  playCurrentSong()
 }
+
+async function playCurrentSong () {
+  const song = queue[currentIndex]
+
+  if (!song) return
+
+  const res = await fetch(
+    `/play_music/${encodeURIComponent(song.artist)}/${encodeURIComponent(
+      song.title
+    )}/`
+  )
+  const data = await res.json()
+
+  if (sound) {
+    sound.stop()
+    sound.unload()
+  }
+  sound = new Howl({
+    src: [data.audio_url],
+    html5: true,
+    onplay: () => {
+      spinning = true;  
+      playBtn.textContent = '❚❚';
+    },
+
+    onpause: () => {
+      spinning = false;
+      playBtn.textContent = '▶';
+    },
+
+    onend: () => {
+      playNextSong();
+    }
+  });
+
+  sound.play();
+}
+playBtn.addEventListener('click', playMusic);
+
+function playNextSong(){
+  currentIndex++;
+
+  // What we want to do is check the query, and for the Opposite Song previous
+  if(currentIndex > queue.size()){
+    // Then we start at CurrentIndex 0 since we shifted it 
+    currentIndex = 0;
+  }
+  playCurrentSong();
+}
+
+function VolumeBar(){
+  sliderVolume.addEventListener('drag', ({
+    
+    
+  }));
+
+}
+

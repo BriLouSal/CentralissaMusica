@@ -84,13 +84,11 @@
         {% endif %}
       </div>
 
-      <audio id="audio" src="{{ audio_url }}"></audio>
-
       <button
         id="playBtn"
         class="mt-8 px-8 py-4 rounded-full bg-pink-500 hover:bg-pink-600 text-white font-bold shadow-xl"
       >
-        ▶ Play
+        ▶
       </button>
 
       <!-- Wrapper for the duration bar -->
@@ -101,12 +99,16 @@
       <!-- Wrapper for the volume bar -->
       <div class="padding-[25px] bg-white, border-r[5px 25px 25px 25px] flex
       items-center ">
-        <!-- Slider -->
+        <!-- Slider for volume -->
          <div id="slider">
             <input type="text" min="0.00" max="1.00">
          </div>
 
+
       </div>
+
+      <!-- Silider for Watchtime -->
+
     
 
 
@@ -125,9 +127,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js"></script>
 
     <script>
-      const music = {{music_name | escapejs }};
-      const artist = {{artist_name | escapejs }};
-      const music_url = {{audio_url_safe | escapejs}};
+      const music = "{{ music_name|escapejs }}";
+      const artist = "{{ artist_name|escapejs }}";
+      const music_url = "{{ audio_url|escapejs }}";
     </script>
 
 

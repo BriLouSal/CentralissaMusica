@@ -48,6 +48,7 @@ from random import shuffle
 
 
 
+
 # We wanna check if the songs are being played from the playlist 
 
 # If not we can do a randomized playlist, and if the user does the repeat system, 
@@ -57,18 +58,39 @@ from random import shuffle
 # Redirect it but the only problem is how do we make the redirection not obvious
 # so we need high speed, I purpose threading for this endeavour
 
+# Works when you click randomized button 
 def randomized_playlist_request(request):
     # Grab the model from the playlist 
     playlist = list(Music.objects.get.all())
-    return playlist
+    if not playlist:
+        return JsonResponse({"playlist": []})
+    # We wanna shuffle it...
+    shuffle(playlist)
+    # Grab the playlist music
+    playlist = playlist[:20]
+    
+    song = [
+        {
+            "title": song.title,
+            "artist": song.artist,
+            "image": song.images.url if song.images else None,
+            "audio_url": song.audio_file.url if song.audio_file else None,
+        }
+        for song in playlist
+    ]
+    return JsonResponse({'playlist': playlist})
+    
+    
+    
+    
 
-
+    
 
 def create_random_playlist_sets(request, music_name: str, artist_name: str):
     # We want to populate the Music objects, because this is the key for the music generated playlist to be world-class, so I purpose we use deezer query
     # use our music that we have in our music_player and then generate it
     cache_key = f"deezer_metadata:{artist_name.lower()}:{music_name.lower()}"
-    
+    # Cache it so we don't spend too much on API calls that are frequent haha
     cached = cache.get(cache_key)
     if cached:
         return cached
@@ -152,5 +174,4 @@ def get_song_data(song_name: str, artist_name:str):
     }
     
 # For the playlist one, we gotta ensure that the previous url was actually from the playlist music :)
-
 
