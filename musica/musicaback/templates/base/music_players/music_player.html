@@ -73,14 +73,19 @@
 
     <div class="flex flex-col items-center justify-center min-h-[80vh] gap-6">
       <div
-        class="relative w-[420px] h-[420px] rounded-full flex items-center justify-center shadow-2xl overflow-hidden bg-black"
+        class="relative w-[420px] h-[420px] rounded-full flex items-center justify-center shadow-2xl overflow-hidden bg-[radial-gradient(circle_at_center,#374151_0%,#111827_70%,#020617_100%)]"
       >
+        <!-- 🎧 GROOVES -->
         <div
-          class="absolute inset-0 rounded-full bg-[repeating-radial-gradient(circle_at_center,rgba(255,255,255,0.03)_0px,rgba(255,255,255,0.03)_2px,transparent_3px,transparent_8px)]"
+          class="absolute inset-0 rounded-full bg-[repeating-radial-gradient(circle_at_center,rgba(255,255,255,0.06)_0px,rgba(255,255,255,0.06)_2px,transparent_3px,transparent_9px)]"
         ></div>
 
         <div
-          class="absolute inset-0 rounded-full bg-[linear-gradient(120deg,transparent_40%,rgba(255,255,255,0.08)_55%,transparent_70%)]"
+          class="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.08)_0%,transparent_60%)]"
+        ></div>
+
+        <div
+          class="absolute inset-0 rounded-full bg-[linear-gradient(120deg,transparent_40%,rgba(255,255,255,0.12)_55%,transparent_70%)]"
         ></div>
 
         {% if image %}
@@ -89,14 +94,13 @@
         >
           <img
             src="{{ image }}"
-            alt="{{ music_name }}"
             id="deckA"
             class="w-[200px] h-[200px] rounded-full object-cover z-10"
           />
         </div>
         {% endif %}
 
-        <div class="absolute w-3 h-3 bg-gray-900 rounded-full z-20"></div>
+        <div class="absolute w-3 h-3 bg-gray-800 rounded-full z-20"></div>
       </div>
 
       <button
@@ -106,19 +110,19 @@
         ▶
       </button>
 
-      <div class="flex flex-row items-center gap-3">
+      <div class="flex items-center gap-3">
         <input
           type="range"
           min="0"
           max="1"
           step="0.01"
+          value="1"
           id="volumeSlider"
           class="w-48 accent-pink-500"
         />
-        <p class="volumeDisplay">100%</p>
+        <p class="volumeDisplay text-white">100%</p>
       </div>
     </div>
-
     {% block scripts %}
 
     <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>

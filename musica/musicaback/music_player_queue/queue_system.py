@@ -61,7 +61,7 @@ from random import shuffle
 # Works when you click randomized button 
 def randomized_playlist_request(request):
     # Grab the model from the playlist 
-    playlist = list(Music.objects.get.all())
+    playlist = list(Music.objects.all())
     if not playlist:
         return JsonResponse({"playlist": []})
     # We wanna shuffle it...
@@ -78,7 +78,7 @@ def randomized_playlist_request(request):
         }
         for song in playlist
     ]
-    return JsonResponse({'playlist': playlist})
+    return JsonResponse({'playlist': song})
     
     
     

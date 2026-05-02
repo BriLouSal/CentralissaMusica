@@ -30,9 +30,12 @@ async function playMusic () {
       onpause: () => {
         spinning = false
         playBtn.textContent = '▶'
+      },
+      onend: () =>{
+        playNextSong()
       }
     })
-
+    
     sound.play()
   } else {
     if (sound.playing()) {
@@ -51,6 +54,8 @@ async function queueRandomizedVersion () {
   const res = await fetch('/musica/randomized_playlist/')
   const data = await res.json()
 
+  console.log("playlist data:", data);
+
   queue = data.playlist
   currentIndex = 0
 
@@ -68,6 +73,8 @@ async function playCurrentSong () {
     )}/`
   )
   const data = await res.json()
+
+  
 
   if (sound) {
     sound.stop()
@@ -98,14 +105,23 @@ async function playCurrentSong () {
 }
 playBtn.addEventListener('click', playMusic)
 
-function playNextSong () {
-  currentIndex++
 
-  // What we want to do is check the query, and for the Opposite Song previous
-  if (currentIndex > queue.length) {
-    // Then we start at CurrentIndex 0 since we shifted it
+async function playNextSong () {
+  if (queue.length === 0) {
+    await queueRandomizedVersion()
+    return
+  }
+
+  currentIndex++
+      // Then we start at CurrentIndex 0 since we shifted it
+
+
+  if (currentIndex >= queue.length) {
+        // Then we start at CurrentIndex 0 since we shifted it
+
     currentIndex = 0
   }
+
   playCurrentSong()
 }
 
