@@ -1,7 +1,7 @@
 const playBtn = document.getElementById('playBtn')
 const deck = document.getElementById('deckA')
 const sliderVolume = document.getElementById('volumeSlider')
-
+const volumeDisplay = document.querySelector('.volumeDisplay')
 let angle = 0
 let spinning = false
 
@@ -20,6 +20,7 @@ async function playMusic () {
     sound = new Howl({
       src: [data.audio_url],
       html5: true,
+      volume: sliderVolume ? Number(sliderVolume.value) : 1,
 
       onplay: () => {
         spinning = true
@@ -74,6 +75,7 @@ async function playCurrentSong () {
   }
   sound = new Howl({
     src: [data.audio_url],
+  
     html5: true,
     onplay: () => {
       spinning = true;  
@@ -98,17 +100,41 @@ function playNextSong(){
   currentIndex++;
 
   // What we want to do is check the query, and for the Opposite Song previous
-  if(currentIndex > queue.size()){
+  if(currentIndex > queue.length){
     // Then we start at CurrentIndex 0 since we shifted it 
     currentIndex = 0;
   }
   playCurrentSong();
 }
 
-function VolumeBar(){
-  sliderVolume.addEventListener('input', ({
+let vinylAngle = 0;
+function spin(){
+  if(spinning && deck ){
+    vinylAngle += 0.4;
+    deck.style.transform = `rotate(${vinylAngle}deg)`;
 
-  }));
-
+  }
+  requestAnimationFrame(spin);
 }
 
+spin();
+function setVolume(value){
+  const vol = Math.max(0, Math.min(1, Number(value)));
+    if (sound) {
+    sound.volume(newVolume);
+  }
+
+  if (volumeDisplay) {
+    volumeDisplay.textContent = `${Math.round(newVolume * 100)}%`;
+  }
+}
+
+function initVolumeSlider() {
+  if (!sliderVolume) return;
+
+  sliderVolume.value = 1;
+
+  sliderVolume.addEventListener('input', () => {
+    setVolume(sliderVolume.value);
+  });
+}

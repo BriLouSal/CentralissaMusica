@@ -72,7 +72,6 @@
     <!-- Wrapper for the music player -->
 
     <div class="flex flex-col items-center justify-center min-h-[80vh] gap-6">
-      <!-- 💿 VINYL -->
       <div
         class="relative w-[420px] h-[420px] rounded-full flex items-center justify-center shadow-2xl overflow-hidden bg-black"
       >
@@ -107,7 +106,7 @@
         ▶
       </button>
 
-      <div class="flex items-center gap-3">
+      <div class="flex flex-row items-center gap-3">
         <input
           type="range"
           min="0"
@@ -116,6 +115,7 @@
           id="volumeSlider"
           class="w-48 accent-pink-500"
         />
+        <p class="volumeDisplay">100%</p>
       </div>
     </div>
 

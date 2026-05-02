@@ -42,7 +42,9 @@ urlpatterns = [
     path(
     'play_music/<str:artist_name>/<str:music_name>/',
     music_player.play_music,
-    name='play_music')
+    name='play_music'),
+    
+    # path('musica/slowed_music/<str:file_name>/<float:slowed_size>/', slowed_music, name='slowed_music'),
    
 ]
 

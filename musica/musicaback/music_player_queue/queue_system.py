@@ -173,5 +173,5 @@ def get_song_data(song_name: str, artist_name:str):
         "genre": genre_name,
     }
     
-# For the playlist one, we gotta ensure that the previous url was actually from the playlist music :)
+# For the playlist one, we gotta ensure that the previous url was actually from the playlist music :) So this is a TBD hehe, and I want to create like a 
 
