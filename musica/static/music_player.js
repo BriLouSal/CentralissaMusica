@@ -75,66 +75,68 @@ async function playCurrentSong () {
   }
   sound = new Howl({
     src: [data.audio_url],
-  
+    html5: true,
+    volume: sliderVolume ? Number(sliderVolume.value) : 1,
+
     html5: true,
     onplay: () => {
-      spinning = true;  
-      playBtn.textContent = '❚❚';
+      spinning = true
+      playBtn.textContent = '❚❚'
     },
 
     onpause: () => {
-      spinning = false;
-      playBtn.textContent = '▶';
+      spinning = false
+      playBtn.textContent = '▶'
     },
 
     onend: () => {
-      playNextSong();
+      playNextSong()
     }
-  });
+  })
 
-  sound.play();
+  sound.play()
 }
-playBtn.addEventListener('click', playMusic);
+playBtn.addEventListener('click', playMusic)
 
-function playNextSong(){
-  currentIndex++;
+function playNextSong () {
+  currentIndex++
 
   // What we want to do is check the query, and for the Opposite Song previous
-  if(currentIndex > queue.length){
-    // Then we start at CurrentIndex 0 since we shifted it 
-    currentIndex = 0;
+  if (currentIndex > queue.length) {
+    // Then we start at CurrentIndex 0 since we shifted it
+    currentIndex = 0
   }
-  playCurrentSong();
+  playCurrentSong()
 }
 
-let vinylAngle = 0;
-function spin(){
-  if(spinning && deck ){
-    vinylAngle += 0.4;
-    deck.style.transform = `rotate(${vinylAngle}deg)`;
-
+let vinylAngle = 0
+function spin () {
+  if (spinning && deck) {
+    vinylAngle += 0.4
+    deck.style.transform = `rotate(${vinylAngle}deg)`
   }
-  requestAnimationFrame(spin);
+  requestAnimationFrame(spin)
 }
 
-spin();
-function setVolume(value){
-  const vol = Math.max(0, Math.min(1, Number(value)));
-    if (sound) {
-    sound.volume(newVolume);
+spin()
+function setVolume (value) {
+  const vol = Math.max(0, Math.min(1, Number(value)))
+  if (sound) {
+    sound.volume(vol)
   }
 
   if (volumeDisplay) {
-    volumeDisplay.textContent = `${Math.round(newVolume * 100)}%`;
+    volumeDisplay.textContent = `${Math.round(vol * 100)}%`
   }
 }
 
-function initVolumeSlider() {
-  if (!sliderVolume) return;
+function initVolumeSlider () {
+  if (!sliderVolume) return
 
-  sliderVolume.value = 1;
+  sliderVolume.value = 1
 
   sliderVolume.addEventListener('input', () => {
-    setVolume(sliderVolume.value);
-  });
+    setVolume(sliderVolume.value)
+  })
 }
+initVolumeSlider()
