@@ -36,7 +36,7 @@ urlpatterns = [
     path('album/<str:artist_name>/<str:album_name>/', views.album_page, name='album_view'),
     
     path('musica/randomized_playlist/', randomized_playlist_request, name='random_playlist'),
-    path('musica/generate_random_query/<str:music_name>/<str:artist_name>/', randomized_playlist_request, name='random_playlist'),
+    path('musica/generate_random_query/<str:music_name>/<str:artist_name>/', create_random_playlist_sets, name='create_random_playlist_sets'),
     
 
 

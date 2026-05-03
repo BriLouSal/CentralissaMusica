@@ -100,7 +100,7 @@
         </div>
         {% endif %}
 
-        <div class="absolute w-3 h-3 bg-gray-800 rounded-full z-20"></div>
+        <div class="absolute w-5 h-5 bg-black rounded-full z-20"></div>
       </div>
 
       <button
@@ -122,6 +122,14 @@
         />
         <p class="volumeDisplay text-white">100%</p>
       </div>
+      <div class="w-[500px] mt-6">
+        <div id="waveform" class="w-full"></div>
+
+        <div class="flex justify-between text-white text-sm mt-2">
+          <span id="currentTime">0:00</span>
+          <span id="duration">0:00</span>
+        </div>
+      </div>
     </div>
     {% block scripts %}
 
@@ -132,6 +140,7 @@
     <script src="https://cdn.jsdelivr.net/npm/animejs/dist/bundles/anime.umd.min.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js"></script>
+    <script src="https://unpkg.com/wavesurfer.js"></script>
 
     <script>
       const music = "{{ music_name|escapejs }}";

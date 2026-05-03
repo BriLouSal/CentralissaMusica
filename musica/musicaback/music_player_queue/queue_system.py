@@ -46,7 +46,8 @@ from decimal import Decimal
 
 from random import shuffle
 
-
+import requests
+from django.core.files.base import ContentFile
 
 
 # We wanna check if the songs are being played from the playlist 
@@ -86,14 +87,14 @@ def randomized_playlist_request(request):
 
     
 
-def create_random_playlist_sets(request, music_name: str, artist_name: str):
+def create_random_playlist_sets(request, music_name: str, artist_name: str) -> JsonResponse:
     # We want to populate the Music objects, because this is the key for the music generated playlist to be world-class, so I purpose we use deezer query
     # use our music that we have in our music_player and then generate it
     cache_key = f"deezer_metadata:{artist_name.lower()}:{music_name.lower()}"
     # Cache it so we don't spend too much on API calls that are frequent haha
     cached = cache.get(cache_key)
     if cached:
-        return cached
+        return JsonResponse({"playlist": [cached]})
     
     # Time to use Django's ORM in order to filter the Musib object to find the exact artist and music naem and find it in the database
     
@@ -108,32 +109,49 @@ def create_random_playlist_sets(request, music_name: str, artist_name: str):
             "artist": song.artist,
             "genre": song.genre,
             "deezer_id": song.deezer_id,
-            "image_url": song.image_url,
+           
         }
         cache.set(cache_key, data, 60 * 60 * 24)
-        return data
+        return JsonResponse({"playlist": [data]})
     data = get_song_data(music_name, artist_name)
     
     if data:
-        # Store in our Database
         Music.objects.update_or_create(
-            deezer_id=data['deezer_id'],
-            defualts={
+            deezer_id=data["deezer_id"],
+            defaults={
                 "title": data["title"],
                 "artist": data["artist"],
-                "genre": data["genre"],
-                "image_url": data["image_url"],
-
+                "genre": data.get("genre", "Unknown"),
             }
         )
-        cache.set(cache_key, data, 60 * 60 * 24)
-    return data
+
+    cache.set(cache_key, data, 60 * 60 * 24)
+    
+    playlist = list(Music.objects.all())
+    shuffle(playlist)
+    playlist = playlist[:20]
+
+    songs = [
+        {
+            "title": song.title,
+            "artist": song.artist,
+            "image": song.images.url if song.images else None,
+            "audio_url": song.audio_file.url if song.audio_file else None,
+        }
+        for song in playlist
+    ]
+    return JsonResponse({"playlist": songs})
+
 
 
 
 def get_song_data(song_name: str, artist_name:str):
     query =  song_name 
     cache_key = f"deezer:{query}"
+    
+    cached = cache.get(cache_key)
+    if cached:
+        return cached
     
     if artist_name:
         query = f"{artist_name} {song_name}"
