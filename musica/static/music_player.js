@@ -123,7 +123,22 @@ async function playCurrentSong () {
     }
   })
 
-  sound.play()
+  // This will conver the audio to spatial, and we can do this
+  // via the built in method of Howler, creating a unqiue user performancce
+  const sound_convert_to_spatial = sound.play()
+  sound.pannerAttr(
+    {
+      panningModel: 'HRTF', 
+      distanceModel: 'inverse', 
+      refDistance: 1,
+      maxDistance: 10000,
+      rolloffFactor: 1
+    },
+    sound_convert_to_spatial
+  )
+
+  Howler.pos(0, 0, 0)
+  sound.pos(1, 0, 0, sound_convert_to_spatial)
 }
 playBtn.addEventListener('click', playMusic)
 
@@ -148,7 +163,7 @@ async function playNextSong () {
 let vinylAngle = 0
 function spin () {
   if (spinning && deck) {
-    vinylAngle += 0.4
+    vinylAngle += 0.5
     deck.style.transform = `rotate(${vinylAngle}deg)`
   }
   requestAnimationFrame(spin)
