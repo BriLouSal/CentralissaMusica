@@ -110,6 +110,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
     'axes.middleware.AxesMiddleware',
+    "musicaback.middleware.favicon_middleware.FaviconMiddleware",
 ]
 
 ROOT_URLCONF = 'musica.urls'

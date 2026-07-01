@@ -1,5 +1,6 @@
 const playBtn = document.getElementById('playBtn')
-const deck = document.getElementById('deckA')
+const deck = document.getElementById('albumCover')
+const albumCoverEl = document.getElementById('albumCover')
 const sliderVolume = document.getElementById('volumeSlider')
 const volumeDisplay = document.querySelector('.volumeDisplay')
 let angle = 0
@@ -279,4 +280,21 @@ function syncWaveToHowler () {
   if (sound.playing()) {
     requestAnimationFrame(syncWaveToHowler)
   }
+}
+
+
+// We need to update the Album cover and Playtime
+function UpdateSongAfterQueue(title, artist, coverURL){
+  if(songTitle){
+    songTitle.textContent = title
+  }
+  if(songArtist){
+    songArtist.textContent = artist
+  }
+  if(coverImage){
+    coverImage.src = coverURL
+  }
+
+  
+
 }

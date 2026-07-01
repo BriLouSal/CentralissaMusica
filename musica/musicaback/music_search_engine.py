@@ -25,9 +25,6 @@ from django.http import JsonResponse
 
 import os
 from dotenv import load_dotenv
-import spotipy
-from spotipy import Spotify
-from spotipy.oauth2 import SpotifyOAuth
 from asgiref.sync import sync_to_async, async_to_sync
 
 

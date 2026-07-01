@@ -8,6 +8,8 @@ from . import views, music_api, music_search_engine,auto_mixer, rate_limit_auth,
 from .music_player_queue.queue_system import randomized_playlist_request, create_random_playlist_sets
 
 
+from .music_player_queue.spatial_audio_setup import audio_analysis, spectral_masking
+
 urlpatterns = [
     path(
         "accounts/3rdparty/login/cancelled/",
@@ -36,18 +38,33 @@ urlpatterns = [
     path('album/<str:artist_name>/<str:album_name>/', views.album_page, name='album_view'),
     
     path('musica/randomized_playlist/', randomized_playlist_request, name='random_playlist'),
+   
     path('musica/generate_random_query/<str:music_name>/<str:artist_name>/', create_random_playlist_sets, name='create_random_playlist_sets'),
     
 
-
+    # Music setup
     
     path(
     'play_music/<str:artist_name>/<str:music_name>/',
     music_player.play_music,
     name='play_music'),
     
+    path(
+    'audio_analysis/<str:audio_name>/<str:artist_name>/',
+    audio_analysis,
+    name='audio_analysis'),
+    
+    path(
+    'spectral_masking/<str:audio_name>/<str:artist_name>/',
+    spectral_masking,
+    name='spectral_masking'),
+    
+    
     
     # path('musica/slowed_music/<str:file_name>/<float:slowed_size>/', slowed_music, name='slowed_music'),
+    
+    
+    
    
 ]
 

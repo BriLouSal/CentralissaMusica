@@ -12,3 +12,4 @@ pedalboard
 spotDL
 spaudiopy
 yt-dlp
+maturin
